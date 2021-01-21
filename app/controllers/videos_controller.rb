@@ -24,8 +24,14 @@ class VideosController < ApplicationController
   def create
     @video = Video.new(video_params)
 
+    if Video.find_by(title: @video.title)
+      render json: {ok: false, cause: "duplicate errors", errors: @video.errors}, status: :bad_request
+      return 
+    end
+
     unless @video.save
       render json: {ok: false, cause: "validation errors", errors: @video.errors}, status: :bad_request
+      return 
     end
   end
 
